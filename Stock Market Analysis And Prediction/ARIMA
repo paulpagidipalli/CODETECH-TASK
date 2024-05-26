@@ -1,0 +1,4 @@
+# Fit ARIMA model
+model = ARIMA(data_to_use, order=(5, 1, 0))  # Order (p,d,q)
+model_fit = model.fit()
+print(model_fit.summary())
