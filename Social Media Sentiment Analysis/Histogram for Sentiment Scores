@@ -1,0 +1,9 @@
+#Plot histogram for sentiment scores
+import matplotlib.pyplot as plt
+plt.figure(figsize=(10, 6))
+plt.hist(df['sentiment'], bins=30, color='skyblue', edgecolor='black')
+plt.title('Sentiment Distribution by tweets')
+plt.xlabel('Sentiment Polarity')
+plt.ylabel('Frequency')
+plt.grid(True)
+plt.show()
