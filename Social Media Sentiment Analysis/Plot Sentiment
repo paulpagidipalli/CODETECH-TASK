@@ -1,0 +1,13 @@
+Plotting average sentiment for each label
+
+# Calculate average sentiment for each label
+label_sentiment = df.groupby('label')['sentiment'].mean()
+# Plot average sentiment for each label
+plt.figure(figsize=(8, 6))
+label_sentiment.plot(kind='bar', color=['red', 'green'])
+plt.title('Average Sentiment by Label')
+plt.xlabel('Label')
+plt.ylabel('Average Sentiment')
+plt.xticks(rotation=0)
+plt.grid(True)
+plt.show()
