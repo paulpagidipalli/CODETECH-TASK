@@ -1,0 +1,120 @@
+SOCIAL MEDIA SENTIMENT ANALYSIS:
+
+--> 1
+import pandas as pd
+df = pd.read_csv('/content/twitter.csv')
+# Display the first few rows of the dataset
+print(df.head())
+import nltk
+import spacy
+# Download NLTK data
+nltk.download('punkt')
+nltk.download('stopwords')
+# Load spaCy model
+nlp = spacy.load('en_core_web_sm')
+
+--> Output 1
+   id  label                                              tweet
+0   1      0   @user when a father is dysfunctional and is s...
+1   2      0  @user @user thanks for #lyft credit i can't us...
+2   3      0                                bihday your majesty
+3   4      0  #model   i love u take with u all the time in ...
+4   5      0             factsguide: society now    #motivation
+[nltk_data] Downloading package punkt to /root/nltk_data...
+[nltk_data]   Package punkt is already up-to-date!
+[nltk_data] Downloading package stopwords to /root/nltk_data...
+[nltk_data]   Package stopwords is already up-to-date!
+
+--> 2
+import re
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+from nltk.stem import PorterStemmer
+from nltk.stem.wordnet import WordNetLemmatizer
+# Initialize NLTK components
+stop_words = set(stopwords.words('english'))
+stemmer = PorterStemmer()
+lemmatizer = WordNetLemmatizer()
+def clean_text(text):
+    # Remove URLs
+    text = re.sub(r'http\S+', '', text)
+    # Remove mentions and hashtags
+    text = re.sub(r'@\w+', '', text)
+    text = re.sub(r'#\w+', '', text)
+    # Remove special characters and numbers
+    text = re.sub(r'[^a-zA-Z\s]', '', text)
+    return text
+def tokenize(text):
+    # Tokenize the text
+    tokens = word_tokenize(text)
+    return tokens
+def remove_stopwords(tokens):
+    # Remove stop words
+    tokens = [word for word in tokens if word.lower() not in stop_words]
+    return tokens
+def stem_tokens(tokens):
+    # Apply stemming
+    tokens = [stemmer.stem(word) for word in tokens]
+    return tokens
+def lemmatize_tokens(tokens):
+    # Apply lemmatization
+    tokens = [lemmatizer.lemmatize(word) for word in tokens]
+    return tokens
+def preprocess_text(text, use_lemmatization=True):
+    # Clean the text
+    text = clean_text(text)
+    # Tokenize the text
+    tokens = tokenize(text)
+    # Remove stop words
+    tokens = remove_stopwords(tokens)
+    # Stem or lemmatize tokens
+    if use_lemmatization:
+        tokens = lemmatize_tokens(tokens)
+    else:
+        tokens = stem_tokens(tokens)
+    return ' '.join(tokens)
+
+# Apply preprocessing to the text column of your dataset
+df['cleaned_tweet'] = df['tweet'].apply(clean_text)
+# Display the first few rows of the processed dataset
+print(df.head())
+
+--> Output 2
+   id  label                                              tweet  \
+0   1      0   @user when a father is dysfunctional and is s...   
+1   2      0  @user @user thanks for #lyft credit i can't us...   
+2   3      0                                bihday your majesty   
+3   4      0  #model   i love u take with u all the time in ...   
+4   5      0             factsguide: society now    #motivation   
+
+                                       cleaned_tweet  
+0    when a father is dysfunctional and is so sel...  
+1    thanks for  credit i cant use cause they don...  
+2                                bihday your majesty  
+3        i love u take with u all the time in ur     
+4                         factsguide society now
+
+--> 3
+from textblob import TextBlob
+def get_sentiment(text):
+    blob = TextBlob(text)
+    return blob.sentiment.polarity
+df['sentiment'] = df['cleaned_tweet'].apply(get_sentiment)
+print('sentiment scores:')
+print(df['sentiment'] )
+
+--> Output 3:
+sentiment scores:
+0       -0.5
+1        0.2
+2        0.0
+3        0.5
+4        0.0
+        ... 
+31957    0.0
+31958    0.4
+31959   -0.5
+31960    0.0
+31961    0.0
+Name: sentiment, Length: 31962, dtype: float64
+
