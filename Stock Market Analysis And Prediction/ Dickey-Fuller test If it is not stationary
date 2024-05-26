@@ -8,4 +8,3 @@ if result[1] > 0.05:
     data_to_use = data_diff
 else:
     data_to_use = data['Close']
-
