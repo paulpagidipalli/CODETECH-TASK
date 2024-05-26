@@ -1,0 +1,19 @@
+# Calculate the Mean Squared Error (MSE) for the forecast
+# (for demonstration, we'll use the last part of the historical data as test data)
+train_size = int(len(data) * 0.8)
+train_data, test_data = data['Close'][0:train_size], data['Close'][train_size:]
+history = [x for x in train_data]
+predictions = []
+
+for t in range(len(test_data)):
+    model = ARIMA(history, order=(5, 1, 0))
+    model_fit = model.fit()
+    output = model_fit.forecast(steps=1)
+    yhat = output[0]
+    predictions.append(yhat)
+    obs = test_data.iloc[t]
+    history.append(obs)
+
+# Calculate MSE
+mse = mean_squared_error(test_data, predictions)
+print(f'Mean Squared Error: {mse}')
